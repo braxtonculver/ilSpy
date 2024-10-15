@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RootNamespace>ICSharpCode.Decompiler.PowerShell</RootNamespace>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PowerShellStandard.Library" />
+    <PackageReference Include="Mono.Cecil" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ICSharpCode.Decompiler\ICSharpCode.Decompiler.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ICSharpCode.ILSpyX\PdbProvider\MonoCecilDebugInfoProvider.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="..\ICSharpCode.ILSpyX\PdbProvider\PortableDebugInfoProvider.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="..\ICSharpCode.ILSpyX\PdbProvider\DebugInfoUtils.cs" Link="%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Condition=" '$(OS)' == 'Windows_NT' " Command="powershell -Command &quot;Copy-Item $(ProjectDir)manifest.psd1 $(TargetDir)$(TargetName).psd1&quot;" />
+	<Exec Condition=" '$(OS)' != 'Windows_NT' " Command="pwsh -Command &quot;Copy-Item $(ProjectDir)manifest.psd1 $(TargetDir)$(TargetName).psd1&quot;" />
+  </Target>
+</Project>
